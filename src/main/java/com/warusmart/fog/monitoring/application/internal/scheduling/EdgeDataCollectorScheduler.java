@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class EdgeDataCollectorScheduler {
 
     private static final Logger logger = LoggerFactory.getLogger(EdgeDataCollectorScheduler.class);
-    private static final String EDGE_URL = "http://192.168.0.100:8080/sensor"; // <---AJUSTAR SEGÚN LA RED
+    private static final String EDGE_URL = "http://127.0.0.1:5000/sensor"; // <---AJUSTAR SEGÚN LA RED
 
     private final CreateSensorDataCommandService commandService;
     private final RestTemplate restTemplate;

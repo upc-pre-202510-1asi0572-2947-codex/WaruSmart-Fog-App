@@ -2,6 +2,7 @@ package com.warusmart.fog.iam.interfaces.rest;
 
 import com.warusmart.fog.iam.application.internal.EdgeRegistrationService;
 import com.warusmart.fog.iam.domain.model.aggregates.Edge;
+import com.warusmart.fog.iam.interfaces.rest.resources.EdgeRegistrationResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,8 @@ public class EdgeController {
     }
 
     @PostMapping("/register")
-    public Edge registerEdge(@RequestParam String edgeId, @RequestParam String deviceInfo) {
-        return edgeRegistrationService.registerEdge(edgeId, deviceInfo);
+    public Edge registerEdge(@RequestBody EdgeRegistrationResource edgeRegistrationResource) {
+        return edgeRegistrationService.registerEdge(edgeRegistrationResource.edgeId() , edgeRegistrationResource.deviceInfo());
     }
 
     @GetMapping("/{edgeId}")

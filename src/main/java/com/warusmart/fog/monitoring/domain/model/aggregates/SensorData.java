@@ -18,12 +18,15 @@ public class SensorData {
     private Long id;
 
     @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "device_id_value"))
     private DeviceId deviceId;
 
     @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "temperature_value"))
     private Temperature temperature;
 
     @Embedded
+    @AttributeOverride(name = "value", column = @Column(name = "humidity_value"))
     private Humidity humidity;
 
     private LocalDateTime timestamp;

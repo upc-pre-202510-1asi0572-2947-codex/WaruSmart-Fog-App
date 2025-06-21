@@ -15,7 +15,6 @@ import java.util.Set;
 @Setter
 public class Edge extends AuditableAbstractAggregateRoot<Edge> {
 
-    @Id
     @Column(name = "edge_id")
     private String edgeId;
 

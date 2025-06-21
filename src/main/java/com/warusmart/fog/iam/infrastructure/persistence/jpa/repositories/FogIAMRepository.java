@@ -8,4 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface FogIAMRepository extends JpaRepository<FogIAM, Long> {
+    Optional<FogIAM> findById(Long id);
 }
