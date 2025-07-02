@@ -10,6 +10,8 @@ public class SensorDataResourceAssembler {
                 aggregate.getDeviceId().value(),
                 aggregate.getTemperature().value(),
                 aggregate.getHumidity().value(),
+                aggregate.getSoilMoisture().value(),
+                aggregate.getZone(),
                 aggregate.getTimestamp()
         );
     }

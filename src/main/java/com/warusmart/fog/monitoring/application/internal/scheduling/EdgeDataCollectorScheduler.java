@@ -1,5 +1,6 @@
 package com.warusmart.fog.monitoring.application.internal.scheduling;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.warusmart.fog.monitoring.application.internal.commandservices.CreateSensorDataCommandService;
 import com.warusmart.fog.monitoring.domain.model.commands.CreateSensorDataCommand;
 import com.warusmart.fog.monitoring.interfaces.rest.resources.SensorReadingDTO;
@@ -24,24 +25,33 @@ public class EdgeDataCollectorScheduler {
         this.restTemplate = new RestTemplate();
     }
 
-    @Scheduled(fixedRate = 15000) // Cada 15 segundos
+    // Java
+    @Scheduled(fixedRate = 15000)
     public void fetchSensorDataFromEdge() {
         try {
-            ResponseEntity<SensorReadingDTO> response = restTemplate.getForEntity(EDGE_URL, SensorReadingDTO.class);
-            SensorReadingDTO dto = response.getBody();
+            ResponseEntity<String> response = restTemplate.getForEntity(EDGE_URL, String.class);
+            String body = response.getBody();
 
-            if (dto != null) {
+            if (body != null && body.contains("\"mensaje\"")) {
+                logger.info("Mensaje recibido desde el Edge App: {}", body);
+                return;
+            }
+
+            SensorReadingDTO lectura = new ObjectMapper().readValue(body, SensorReadingDTO.class);
+
+            if (lectura != null && lectura.deviceId() != null) {
                 var command = new CreateSensorDataCommand(
-                        dto.deviceId(),
-                        dto.temperature(),
-                        dto.humidity(),
-                        dto.timestamp()
+                        lectura.deviceId(),
+                        lectura.temperature(),
+                        lectura.humidity(),
+                        lectura.soilMoisture(),
+                        lectura.zone(),
+                        lectura.timestamp()
                 );
-
                 commandService.handle(command);
-                logger.info("Dato guardado desde Edge: {}", dto);
+                logger.info("Dato guardado desde Edge: {}", lectura);
             } else {
-                logger.warn("Respuesta vacía desde el Edge App");
+                logger.warn("Lectura inválida o sin deviceId");
             }
         } catch (Exception e) {
             logger.error("Error al obtener datos del Edge App", e);

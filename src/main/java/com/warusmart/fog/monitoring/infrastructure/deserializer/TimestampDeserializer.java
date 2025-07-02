@@ -16,12 +16,17 @@ public class TimestampDeserializer extends JsonDeserializer<LocalDateTime> {
         String timestampStr = parser.getText();
 
         try {
-            // Try parsing the timestamp as a raw long (milliseconds)
-            long timestampMillis = Long.parseLong(timestampStr);
-            // Convert milliseconds to LocalDateTime (UTC)
-            return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMillis), ZoneOffset.UTC);
+            // Intenta parsear como ISO 8601
+            Instant instant = Instant.parse(timestampStr);
+            return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
         } catch (Exception e) {
-            throw new IOException("Error parsing timestamp: " + timestampStr, e);
+            // Si falla, intenta parsear como milisegundos
+            try {
+                long timestampMillis = Long.parseLong(timestampStr);
+                return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMillis), ZoneOffset.UTC);
+            } catch (NumberFormatException ex) {
+                throw new IOException("Error parsing timestamp: " + timestampStr, ex);
+            }
         }
     }
 }
