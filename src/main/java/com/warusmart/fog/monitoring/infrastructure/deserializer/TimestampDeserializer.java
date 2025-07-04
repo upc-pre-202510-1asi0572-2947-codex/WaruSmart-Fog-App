@@ -20,10 +20,10 @@ public class TimestampDeserializer extends JsonDeserializer<LocalDateTime> {
         String timestampStr = parser.getText();
 
         try {
-            // Intenta parsear como LocalDateTime con microsegundos
+            // Try to parse as LocalDateTime with microseconds
             return LocalDateTime.parse(timestampStr, FORMATTER);
         } catch (DateTimeParseException e) {
-            // Si falla, intenta parsear como milisegundos
+            // If it fails, it tries to parse as milliseconds
             try {
                 long timestampMillis = Long.parseLong(timestampStr);
                 return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestampMillis), ZoneOffset.UTC);
