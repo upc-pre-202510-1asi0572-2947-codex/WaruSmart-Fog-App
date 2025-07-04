@@ -8,18 +8,21 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class TimestampDeserializer extends JsonDeserializer<LocalDateTime> {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext context) throws IOException {
         String timestampStr = parser.getText();
 
         try {
-            // Intenta parsear como ISO 8601
-            Instant instant = Instant.parse(timestampStr);
-            return LocalDateTime.ofInstant(instant, ZoneOffset.UTC);
-        } catch (Exception e) {
+            // Intenta parsear como LocalDateTime con microsegundos
+            return LocalDateTime.parse(timestampStr, FORMATTER);
+        } catch (DateTimeParseException e) {
             // Si falla, intenta parsear como milisegundos
             try {
                 long timestampMillis = Long.parseLong(timestampStr);
